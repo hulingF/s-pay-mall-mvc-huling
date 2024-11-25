@@ -1,0 +1,6 @@
+spring:
+  config:
+    name: s-pay-mall-mvc
+  profiles:
+    active: dev
+

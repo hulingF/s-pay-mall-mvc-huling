@@ -1,0 +1,72 @@
+server:
+  port: 8080
+  tomcat:
+    # 同时能够与服务器建立连接的客户端数量
+    max-connections: 20
+    threads:
+      # 定义Tomcat工作线程的最大数量为20，工作线程主要负责处理具体的请求任务
+      max: 20
+      # 指定了线程池中最少保留的空闲线程数量为10，保证有一定数量的线程随时待命，以便快速响应新到来的请求
+      min-spare: 10
+    # 设置了等待队列的长度为10，当服务器达到最大连接数，新的请求到来时，这些请求会进入等待队列排队等待处理
+    accept-count: 10
+
+# 微信公众号对接
+#weixin:
+#  config:
+#    originalid: gh_e067c267e056
+#    token: b8b6
+#    app-id: wx5a228ff69e28a91f
+#    app-secret: 0bea03aa1310bac050aae79dd8703928
+#    template_id: RbEZ2jo47dQmF4A7_Ku7RsDy1x_5by6bk1Ox6rPCl4Y
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/s-pay-mall?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 连接池初始化时创建的连接数量为5
+    initialSize: 5
+    # 连接池中最少空闲的连接数量也是5
+    minIdle: 5
+    # 连接池中允许的最大活动连接数量为20
+    maxActive: 20
+    # 获取数据库连接时最长的等待时间为60000毫秒（即60秒）
+    maxWait: 60000
+    # 连接池每隔60000毫秒（60秒）就会检查一次空闲连接是否有效，对那些长时间空闲且可能失效的连接进行清理或者重新验证等操作，保证连接池中的连接都是可用的
+    timeBetweenEvictionRunsMillis: 60000
+    # 验证数据库连接是否有效的查询语句为 SELECT 1
+    validationQuery: SELECT 1
+    # 当连接处于空闲状态时，会按照timeBetweenEvictionRunsMillis所设定的时间间隔来执行validationQuery进行连接有效性测试
+    testWhileIdle: true
+    # 从连接池中获取连接时，不会执行validationQuery来验证连接是否有效，这样可以减少获取连接时的验证开销
+    testOnBorrow: false
+    # 归还连接到连接池时，不会再次验证连接的有效性，同样是出于性能考虑，减少不必要的验证操作
+    testOnReturn: false
+    # 启用对预编译语句的池化管理，预编译语句可以提高数据库操作的性能，通过复用已经编译好的语句，减少编译时间开销，提升数据库执行效率
+    poolPreparedStatements: true
+    # 每个数据库连接可以缓存的最大预编译语句数量为20，合理控制缓存数量，避免过多缓存占用内存等资源
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 连接池的过滤器为stat，这个过滤器通常用于收集和统计数据库连接及操作相关的数据，比如连接的使用次数、查询执行次数等，方便对数据库使用情况进行监控和分析
+    filters: stat
+
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location:  classpath:/mybatis/config/mybatis-config.xml
+
+# 支付宝支付 - 沙箱 https://opendocs.alipay.com/common/02kkv7
+alipay:
+  enabled: true
+  app_id: 9021000132689924
+  merchant_private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDaRt6njKupztX1mS9mUHouS5QjK4Zrb9tiQgxJJJNKcZqJFLwjrsn3tNdKdVhVWIwiEit0I0HLxLsZolb5BzC334VMEk8eUikLR0p7xB7eZSKBAEJYKDEh/RFJAwhSjTI+KtSUMiVeIp3L9zSa7n+HgkGzIPORdv8EPHdqT3hgGq+WryWW1O0cibp6aDaSLz5LlVTYzWQQPdyKyemLIaogZKWxF5YtKW0r6eb73uBSaNMeOpHx9NdRlHNdia8rvVZ6+T2PCPWfhUHc4ai9l/ICC3kWrXrPXTjZ668P76GJJq4UxMg9x4+9uuCxHok15yR3AUESLDxpO+6Ur3zjlW5lAgMBAAECggEAP+n8jGceZOyRrgaa4IS0IhYzXFEEXTU1sgHRAyHYlzXIoFcX+ALYVNX5LG5L3UG+VsOnQayJOZdzicAFY4n9c/nZWDsMO76nEgxf/PmiaFCI1+kxhArQyDkH9K8UoseBbL6x3GsKkhPkzLKoDq3DXfSANGlzqKaFacIi3VhD0S+0hmv3twLWHlb2zcYOylaFqggxIHL51SyG4Q4P7whYGCRr4oARCEJDC+OeqR3tnE0gEHzFasMt89nokqQONxv4PyaEmWk6xCOQqnKiIQDn2YWJ7e3L0v7qJhKE5jZXKIluuSe9LTOVAmvUZq01z8IR+s97f/Sj7WdxXHliXAlKyQKBgQD7F7g0VGvVyecak1DjSGJfVe0zHy9iOCfDhZ9+unmPfV7eNSRBjEMeYBqftwq5+JRiafABGm1dvaJ9PUoDOyblG58mrxJxrZLiN7ZHRKC9H/zSsx9TlFK02pTFDsHTtL2g2CgQqSltNU5ju6it9/17fV8afd8hy+I/0zF8vVXVgwKBgQDeivbcTVeZqxfzUq6tOSJUKPBQWqjjnO5DUH/BU1WXvEg9euJJtjoRPfeIMxQKQNIB57GN1U6HcCRGewHytTG7eeONC0SNvsuz5vkbXGCA3RN8iMBsN0vC0SWD8RLx8Ymjd5jDkwG7CfkwwJyCkcV1QabDJfmmEsemU2zHzstP9wKBgGi4os3Ia9UVSPqPeEvik4yZZL1Og0+ehg8IutV65loO+rMITN+9pPyVLmVwTNv1LcXB0yRSpkxTW+KJ3kVstTMWixDyMWoR71HD1JTyrWtTXPlvVWBhWwEsrKFnHzWxiuj7XfJc6vcuJUx5Jsevxxtq1XBSEO6ifvEJnvkcaiELAoGARnlXZ7iObzmBYiri6jRXrLMyNyAer8X4phSOAJj1WBHmBqItmw48IU2wX89dH0obt0K6NaJBNh7LPg6iNUwwLaCR8Q6KbSDovVX9uS5t2SEplJxx41M3iMBW0wu65ieJYNz04apiN+sWoNu+NJMZJuLdfps+DduQohl1L2lLdU0CgYEA8DDtRonHFN+htbqdQGfdktPrn3CDQm6boG9wjiU1nuEJ4jWOVWvuK/p3C/3X3XQqGYo6KGIvorABCvbWQXYbob71VkL8sPRuJguUG2aKG8xvW4dUOaVUxYcuE1OGPUrF7dahB0EXhifeddb5mFFwzK2TVQ6hTYiQHmDyEZX6z6k=
+  alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmgtSO8GV5YSl01AWgGWe2xKJ9oDfjzf5vNtJS6SSc5klmGMToVdsi3gmLipN04yzmnEEchmFxsuxKLLhdQuC4d9V74I6CVIZPPHtaSuz/T3EZTHtQIGwF705Yrq1bd63l70iTfkrS0Ry9f72SDZEBBLllXfFo+otChwRRN+UXDd8X/bplV3/cbRncV5yWRnHHCgzQiwpH3ilS+sOmMfdfac0bi/xB7HIU6nUX04VCjAR7itSr0OmU8HC6p20Ubvjs45R6VuR7FMI+OahCd3LDe/ayelScfQ4zavruk4HGx3TDH4hLDA3N+xid5Cu5erLDPHtFXfnQHI4n/opQaXo5wIDAQAB
+  notify_url: http://xfg-studio.natapp1.cc/api/v1/alipay/alipay_notify_url
+  return_url: https://gaga.plus
+  gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
+
+# 日志
+logging:
+  level:
+    root: info
+  config: classpath:logback-spring.xml
